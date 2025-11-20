@@ -3,204 +3,147 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galaxy Heart Animation</title>
+<title>Nawreen</title>
 
 <style>
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  overflow: hidden;
-  font-family: "Poppins", sans-serif;
-}
-
 /* Galaxy Background */
 body {
-  background: url("https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&w=1400&q=80")
-    no-repeat center center fixed;
-  background-size: cover;
-  animation: galaxyMove 40s infinite linear;
+  margin: 0;
+  overflow: hidden;
+  background: black;
+  font-family: "Pacifico", cursive;
+  color: white;
+  text-align: center;
 }
 
-@keyframes galaxyMove {
-  0% { background-position: center center; }
-  50% { background-position: center top; }
-  100% { background-position: center center; }
+/* Stars animation */
+@keyframes stars {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-2000px); }
 }
 
-/* Handwritten font */
-@font-face {
-  font-family: "LoveHand";
-  src: url("https://fonts.gstatic.com/s/pacifico/v22/FwZY7-Qmy14u9lezJ96A4sijpFu_.ttf");
+.stars, .stars2, .stars3 {
+  position: fixed; top: 0; left: 0;
+  width: 2000px; height: 2000px;
+  background: transparent url('https://i.imgur.com/aYp7QEe.png') repeat;
+  animation: stars 80s linear infinite;
+}
+.stars2 { animation-duration: 120s; opacity: 0.6; }
+.stars3 { animation-duration: 200s; opacity: 0.4; }
+
+/* Heart drawing */
+#heart {
+  position: absolute;
+  top: 35%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px; height: 250px;
 }
 
-.container {
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+path {
+  stroke: #ff3366;
+  stroke-width: 4;
+  fill: none;
+  stroke-dasharray: 1600;
+  stroke-dashoffset: 1600;
+  animation: draw 4s ease forwards;
 }
 
-/* SVG heart drawing */
-svg {
-  width: 300px;
-  height: 300px;
-  overflow: visible;
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
 }
 
-.path {
-  fill: none;
-  stroke: #ff1a6a;
-  stroke-width: 8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 1400;
-  stroke-dashoffset: 1400;
-  animation: drawHeart 4s ease forwards;
-  filter: drop-shadow(0 0 20px #ff1a6a);
+/* Name inside heart */
+#name {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 38px;
+  opacity: 0;
+  animation: fadeIn 2s ease forwards;
+  animation-delay: 3s;
+  font-family: "Pacifico", cursive;
 }
 
-@keyframes drawHeart {
-  to { stroke-dashoffset: 0; }
+/* Subtext */
+#sub {
+  position: absolute;
+  top: 63%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  opacity: 0;
+  animation: fadeIn 2s forwards;
+  animation-delay: 4s;
 }
 
-/* Name appears after animation */
-.name {
-  position: absolute;
-  color: #fff;
-  font-family: "LoveHand", cursive;
-  font-size: 38px;
-  opacity: 0;
-  transition: opacity 1.5s ease;
-  text-shadow: 0 0 15px #ff1a6a;
-  top: 53%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+/* Tap to reveal */
+#tap {
+  position: absolute;
+  top: 75%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  opacity: 0;
+  animation: fadeIn 2s forwards;
+  animation-delay: 6s;
+  cursor: pointer;
 }
 
-/* Subtitle */
-.subtitle {
-  position: absolute;
-  top: 63%;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #ffd0e4;
-  font-size: 20px;
-  opacity: 0;
-  transition: opacity 2s ease;
-  text-shadow: 0 0 10px #ff4b88;
-  letter-spacing: 1px;
+/* Hidden message */
+#hidden {
+  position: absolute;
+  top: 88%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 22px;
+  opacity: 0;
+  transition: 1.5s ease;
+  font-family: "Pacifico", cursive;
 }
 
-/* Click-to-reveal */
-.reveal {
-  position: absolute;
-  bottom: 14%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 18px;
-  padding: 12px 24px;
-  background: #ff1a6a;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 1.5s ease;
-  box-shadow: 0 0 15px #ff1a6a;
+/* Fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-.hidden-message {
-  position: absolute;
-  bottom: 7%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 20px;
-  color: #ffe6f2;
-  opacity: 0;
-  transition: opacity 2s ease;
-  text-shadow: 0 0 10px #ff4b88;
-}
-
-/* Floating particles */
-.particle {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  background: #ff4b88;
-  border-radius: 50%;
-  opacity: 0.8;
-  animation: floatUp 4s infinite ease-in-out;
-}
-
-@keyframes floatUp {
-  0% { transform: translateY(0) scale(1); opacity: 1; }
-  100% { transform: translateY(-150px) scale(0.5); opacity: 0; }
-}
+/* Handwritten font import */
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 </style>
 </head>
 
 <body>
 
-<audio id="bgm" src="music.mp3"></audio>
+<div class="stars"></div>
+<div class="stars2"></div>
+<div class="stars3"></div>
 
-<div class="container">
+<!-- Heart SVG Animation -->
+<svg id="heart" viewBox="0 0 100 90">
+  <path d="M50 80 L10 35 A20 20 0 0 1 50 20 A20 20 0 0 1 90 35 Z"/>
+</svg>
 
-  <svg viewBox="0 0 200 200">
-    <path class="path"
-      d="M100 170
-       C20 110, 20 40, 100 60
-       C180 40, 180 110, 100 170 Z" />
-  </svg>
+<div id="name">Nawreen</div>
+<div id="sub">You deserve love.</div>
+<div id="tap">Tap to reveal</div>
+<div id="hidden">I’m glad you exist</div>
 
-  <div class="name" id="name">Nawreen</div>
-  <div class="subtitle" id="subtitle">You deserve love.</div>
-
-  <div class="reveal" id="revealBtn">Tap to reveal</div>
-  <div class="hidden-message" id="secret">I’m glad you exist.</div>
-
-</div>
+<!-- Background Music -->
+<audio id="bgm" loop>
+  <source src="https://cdn.pixabay.com/audio/2022/10/31/audio_1dcd2dfb0c.mp3">
+</audio>
 
 <script>
+// Reveal message on tap
+document.getElementById("tap").addEventListener("click", () => {
+  document.getElementById("hidden").style.opacity = "1";
 
-/* timed reveals */
-setTimeout(() => {
-  document.getElementById("name").style.opacity = 1;
-}, 4000);
-
-setTimeout(() => {
-  document.getElementById("subtitle").style.opacity = 1;
-}, 5000);
-
-setTimeout(() => {
-  document.getElementById("revealBtn").style.opacity = 1;
-}, 6000);
-
-/* Reveal + music */
-document.getElementById("revealBtn").addEventListener("click", () => {
-  document.getElementById("secret").style.opacity = 1;
-  document.getElementById("bgm").play();
+  let music = document.getElementById("bgm");
+  music.play().catch(() => {
+    // Mobile browsers require user interaction
+  });
 });
-
-/* Galaxy particles */
-function createParticles() {
-  for (let i = 0; i < 20; i++) {
-    const p = document.createElement("div");
-    p.classList.add("particle");
-
-    p.style.left = Math.random() * window.innerWidth + "px";
-    p.style.bottom = Math.random() * 60 + "px";
-    p.style.animationDelay = Math.random() * 3 + "s";
-
-    document.body.appendChild(p);
-
-    setTimeout(() => p.remove(), 4000);
-  }
-}
-
-setInterval(createParticles, 1000);
-
 </script>
 
 </body>
