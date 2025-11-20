@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <title>Nawreen’s Go-To Page</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@300;600&display=swap" rel="stylesheet">
+
 <style>
   :root{
     --accent-pink: #ff4fa8;
@@ -12,16 +14,19 @@
     --glass: rgba(255,255,255,0.08);
   }
 
+  /* Reset + base */
   html,body{
     height:100%;
     margin:0;
     font-family: 'Nunito', sans-serif;
-    background: radial-gradient(circle at 25% 20%, #0d0128 0%, #03010f 55%, #000 100%);
+    background: radial-gradient(circle at 25% 20%, #0d0128 0%, #03010f 50%, #000 100%);
     color:#fff;
     overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
   }
 
-  /* Canvas behind UI; pointer-events none so UI clickable */
+  /* Canvas as background - non-interactive so UI receives events */
   canvas#canvas {
     position: fixed;
     inset: 0;
@@ -32,71 +37,79 @@
     display:block;
   }
 
-  /* soft pink glow behind heart */
+  /* Soft pink radial glow centered */
   .heart-glow {
     position: fixed;
     left: 50%;
     top: 50%;
     transform: translate(-50%,-48%);
-    width: 560px;
-    height: 560px;
+    width: clamp(320px, 40vmin, 640px);
+    height: clamp(320px, 40vmin, 640px);
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,120,170,0.38) 0%, rgba(255,60,140,0.12) 30%, rgba(255,20,120,0.04) 60%, transparent 80%);
+    background: radial-gradient(circle, rgba(255,120,170,0.36) 0%, rgba(255,60,140,0.12) 30%, rgba(255,20,120,0.04) 60%, transparent 80%);
     filter: blur(36px) saturate(1.05);
     z-index: 1;
     pointer-events: none;
   }
 
-  /* UI overlay */
-  .ui {
-    position: fixed;
-    inset: 0;
+  /* UI container */
+  .page {
+    position: relative;
     z-index: 4;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    pointer-events: none; /* children override */
-    text-align: center;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
   }
 
+  /* Header at top */
   header.site-header {
-    width:100%;
+    text-align:center;
     padding: 18px 12px;
     box-sizing: border-box;
     font-family: 'Pacifico', cursive;
-    font-size: 28px;
+    font-size: clamp(20px, 3.6vmin, 34px);
     color: var(--accent-light);
-    text-shadow: 0 0 14px rgba(255,110,170,0.9);
+    text-shadow: 0 0 14px rgba(255,110,170,0.95);
     pointer-events: auto;
-    text-align: center;
   }
 
-  /* Main spacer to center heart vertically */
-  .center-area {
-    margin-top: 28px;
-    width:100%;
+  /* main area centers the heart */
+  main.center {
+    flex:1 0 auto;
     display:flex;
-    flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:14px;
+    flex-direction:column;
+    gap: clamp(10px, 2.2vmin, 18px);
+    padding: 12px;
+    pointer-events: none; /* children override */
+  }
+
+  /* heart area is driven by canvas; this box keeps correct size */
+  .heart-frame {
+    width: clamp(260px, 40vmin, 520px);
+    height: clamp(260px, 40vmin, 520px);
+    position: relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     pointer-events: none;
   }
 
-  /* Name inside the heart (handwritten) */
+  /* center handwritten name exactly inside heart */
   .heart-name {
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%); /* exact center */
     z-index: 5;
     font-family: 'Pacifico', cursive;
-    font-size: 44px;
+    font-size: clamp(20px, 5vmin, 44px);
     color: #fff;
-    text-shadow: 0 0 20px rgba(255,120,180,0.95), 0 0 36px rgba(255,60,140,0.6);
+    text-shadow: 0 0 20px rgba(255,120,180,0.95), 0 0 36px rgba(255,60,140,0.5);
     pointer-events: none;
     animation: pulseName 3.2s ease-in-out infinite;
+    white-space: nowrap;
   }
   @keyframes pulseName {
     0%{ transform: translate(-50%,-50%) scale(1); }
@@ -104,30 +117,27 @@
     100%{ transform: translate(-50%,-50%) scale(1); }
   }
 
-  /* Subtitle below heart */
+  /* Subtitle below the heart */
   .subtitle {
-    font-size: 20px;
+    font-size: clamp(14px, 2.6vmin, 20px);
     color: #ffd6ea;
-    text-shadow: 0 0 8px rgba(255,90,150,0.5);
-    margin-top: 16px;
+    text-shadow: 0 0 8px rgba(255,90,150,0.45);
     pointer-events: auto;
+    margin-top: 4px;
   }
 
-  /* footer area for reveal button */
+  /* Footer area pinned to bottom */
   footer.site-footer {
-    position: fixed;
-    bottom: 22px;
-    left: 0;
-    right:0;
     display:flex;
     justify-content:center;
+    align-items:center;
+    padding: 12px;
     pointer-events: auto;
-    z-index: 6;
   }
 
   .reveal-btn {
-    padding: 14px 28px;
-    font-size: 16px;
+    padding: clamp(10px, 2.4vmin, 14px) clamp(18px, 4.4vmin, 28px);
+    font-size: clamp(14px, 2.4vmin, 16px);
     border-radius: 12px;
     background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.12);
@@ -136,25 +146,28 @@
     backdrop-filter: blur(6px);
     box-shadow: 0 10px 30px rgba(0,0,0,0.45);
     transition: transform .15s ease, opacity .25s ease;
+    z-index: 6;
   }
   .reveal-btn:active { transform: translateY(2px) scale(.995); }
 
+  /* message above the footer */
   .message {
     position: fixed;
-    bottom: 86px;
-    left:50%;
-    transform: translateX(-50%);
-    font-size: 26px;
-    font-weight: 700;
+    bottom: calc(22px + clamp(48px, 7vmin, 72px));
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    font-size: clamp(18px, 3.2vmin, 28px);
+    font-weight:700;
     opacity: 0;
+    color: #fff;
     text-shadow: 0 0 18px rgba(255,140,200,0.9);
-    transition: all .7s ease;
+    transition: all .6s ease;
     z-index:6;
-    pointer-events:none;
+    pointer-events: none;
   }
   .message.show { opacity:1; transform: translateX(-50%) translateY(0); }
 
-  /* small sparkles */
+  /* sparkles */
   .sparkle {
     position: fixed;
     width: 8px;
@@ -171,23 +184,22 @@
     100% { opacity: 0; transform: scale(2.2) translateY(-26px); }
   }
 
-  /* butterfly base */
+  /* butterflies */
   .butterfly {
     position: fixed;
-    width: 44px;
-    height: 30px;
+    width: clamp(30px, 7vmin, 46px);
+    height: auto;
     pointer-events: none;
     z-index:6;
     transform-origin: center;
     filter: drop-shadow(0 8px 16px rgba(0,0,0,0.35));
   }
 
-  @media (max-width:520px){
-    header.site-header { font-size: 20px; padding:12px 8px; }
-    .heart-name { font-size: 32px; }
-    .subtitle { font-size: 16px; }
-    .message { font-size: 20px; bottom: 80px; }
-    .reveal-btn { padding: 10px 18px; font-size:15px; }
+  /* small screen tweaks */
+  @media (max-width:420px){
+    .heart-name { font-size: clamp(16px, 6.6vmin, 28px); }
+    header.site-header { font-size: clamp(18px, 5vmin, 22px); }
+    .subtitle { font-size: 14px; }
   }
 </style>
 </head>
@@ -196,50 +208,50 @@
   <!-- WebGL canvas -->
   <canvas id="canvas"></canvas>
 
-  <!-- Pink glow behind heart -->
+  <!-- centered soft glow -->
   <div class="heart-glow" aria-hidden="true"></div>
 
-  <!-- UI overlay -->
-  <div class="ui" aria-hidden="false">
-    <header class="site-header">Nawreen’s Go To Page</header>
+  <div class="page">
+    <header class="site-header">Nawreen’s Go-To Page</header>
 
-    <div class="center-area" role="main" aria-label="Main">
-      <!-- heart area is the canvas; we place name absolutely on top -->
-      <div style="width:360px; height:360px; position:relative; pointer-events:none;">
-        <!-- name centered inside heart -->
-        <div class="heart-name" aria-hidden="true">Nawreen a.k.a Tulreen</div>
+    <main class="center" role="main" aria-label="Main content">
+      <div class="heart-frame" aria-hidden="true">
+        <!-- The heart animation is rendered on the canvas full-screen;
+             this frame just reserves center area and hosts the centered name -->
+        <div class="heart-name" aria-hidden="true">Nawreen</div>
       </div>
 
-      <!-- subtitle below heart -->
       <div class="subtitle">You deserve love.</div>
-    </div>
+    </main>
 
-    <!-- message (hidden until reveal) -->
-    <div id="message" class="message" role="status" aria-live="polite">I wasn't looking for any distractions but you are a good one. ❤️🐝 </div>
-
-    <!-- footer reveal button -->
-    <footer class="site-footer">
+    <footer class="site-footer" role="contentinfo">
       <button id="revealBtn" class="reveal-btn" aria-pressed="false">Tap to Reveal Today’s Message</button>
     </footer>
   </div>
 
-  <!-- calm music (play on reveal click) -->
+  <!-- message (hidden initially) -->
+  <div id="message" class="message" role="status" aria-live="polite">I wasn't looking for any distractions but you are a good one 🐝❤️</div>
+
+  <!-- calm music: plays on user tap. using royalty-free hosted file -->
   <audio id="bgm" preload="auto" loop>
     <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3b637dc5d0.mp3?filename=snowfall-ambient-piano-21076.mp3" type="audio/mpeg">
   </audio>
 
 <script>
-/* ====== UI: reveal, sparkles, butterflies, music ====== */
+/* -------------------------
+   UI Behavior: reveal + audio + particles + butterflies
+   ------------------------- */
 const revealBtn = document.getElementById('revealBtn');
 const messageEl = document.getElementById('message');
 const bgm = document.getElementById('bgm');
 
-function spawnSparkles(centerX, centerY, count=18) {
+/* spawn sparkles around center point */
+function spawnSparkles(cx, cy, count = 18){
   for(let i=0;i<count;i++){
     const s = document.createElement('div');
     s.className = 'sparkle';
-    s.style.left = (centerX + (Math.random()-0.5) * 220) + 'px';
-    s.style.top  = (centerY + (Math.random()-0.5) * 160) + 'px';
+    s.style.left = (cx + (Math.random()-0.5) * 220) + 'px';
+    s.style.top  = (cy + (Math.random()-0.5) * 160) + 'px';
     s.style.width = (6 + Math.random()*8) + 'px';
     s.style.height = s.style.width;
     s.style.animationDuration = (0.9 + Math.random()*0.6) + 's';
@@ -248,19 +260,20 @@ function spawnSparkles(centerX, centerY, count=18) {
   }
 }
 
+/* create a butterfly that flies upward */
 function createButterfly(x,y,dur=6,delay=0,scale=1,flip=false){
   const el = document.createElement('div');
   el.className = 'butterfly';
   el.style.left = x + 'px';
   el.style.top = y + 'px';
   el.style.transform = `scale(${scale}) ${flip? 'rotateY(180deg)' : ''}`;
-  const anim = 'fly' + Math.floor(Math.random()*1e6);
-  const dx = (Math.random()*240 + 120) * (Math.random()<0.5 ? 1 : -1);
-  const dy = - (Math.random()*260 + 180);
+  const animName = 'fly' + Math.floor(Math.random()*1e6);
+  const dx = (Math.random()*240 + 120) * (Math.random()<0.5?1:-1);
+  const dy = - (Math.random()*260 + 160);
   const rot = (Math.random()*50 - 20);
   const style = document.createElement('style');
   style.innerHTML = `
-    @keyframes ${anim} {
+    @keyframes ${animName} {
       0% { transform: translate(0,0) scale(${scale}) rotate(${rot}deg); opacity:0; }
       6% { opacity:1; }
       60% { transform: translate(${dx*0.5}px, ${dy*0.55}px) scale(${scale}) rotate(${rot+10}deg); }
@@ -275,26 +288,48 @@ function createButterfly(x,y,dur=6,delay=0,scale=1,flip=false){
     </g>
   </svg>`;
 
-  el.style.animation = `${anim} ${dur}s ${delay}s linear forwards`;
+  el.style.animation = `${animName} ${dur}s ${delay}s linear forwards`;
   document.body.appendChild(el);
+  // cleanup after animation ends
   setTimeout(()=> { el.remove(); style.remove(); }, (delay + dur + 0.4)*1000);
 }
 
+/* Robust audio play helper (fallback using hidden click for iOS) */
+async function tryPlayAudio(){
+  try {
+    bgm.currentTime = 0;
+    const p = bgm.play();
+    if (p !== undefined) {
+      await p;
+    }
+  } catch (err) {
+    // fallback: create hidden button and trigger it (forces user gesture on some browsers)
+    const hidden = document.createElement('button');
+    hidden.style.display = 'none';
+    document.body.appendChild(hidden);
+    hidden.addEventListener('click', ()=> {
+      bgm.play().catch(()=>{});
+      hidden.remove();
+    });
+    hidden.click();
+  }
+}
+
+/* On reveal: vanish button, show message, spawn effects, play audio */
 function onReveal(e){
-  // vanish button
+  // visually vanish and remove button
   revealBtn.disabled = true;
   revealBtn.style.transition = 'opacity .35s ease, transform .35s ease';
   revealBtn.style.opacity = 0;
   revealBtn.style.transform = 'scale(.92) translateY(6px)';
-  setTimeout(()=> revealBtn.remove(), 380);
+  setTimeout(()=> revealBtn.remove(), 360);
 
   // show message
-  setTimeout(()=> { messageEl.classList.add('show'); }, 260);
+  setTimeout(()=> messageEl.classList.add('show'), 220);
 
-  // particle burst
-  const rect = e.currentTarget.getBoundingClientRect();
-  const cx = rect.left + rect.width/2;
-  const cy = rect.top + rect.height/2;
+  // compute center for particles (use center of viewport)
+  const cx = window.innerWidth / 2;
+  const cy = window.innerHeight / 2;
   spawnSparkles(cx, cy, 22);
 
   // butterflies celebration
@@ -302,22 +337,27 @@ function onReveal(e){
     createButterfly(Math.random()*window.innerWidth, window.innerHeight*0.9, 5+Math.random()*3, i*0.08, 0.7+Math.random()*0.7, Math.random()<0.5);
   }
 
-  // play music (user interaction allows play)
-  bgm.play().catch(()=>{});
+  // play music robustly
+  tryPlayAudio();
 }
-revealBtn.addEventListener('click', onReveal);
-revealBtn.addEventListener('keydown', (ev)=> { if(ev.key==='Enter' || ev.key===' ') { ev.preventDefault(); onReveal(ev); } });
 
-/* ====== WebGL heart shader (original shader code retained) ====== */
+/* attach handlers (click + keyboard) */
+revealBtn.addEventListener('click', onReveal);
+revealBtn.addEventListener('keydown', (ev) => { if(ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); onReveal(ev); } });
+
+/* -------------------------
+   WebGL heart shader (original shader preserved)
+   ------------------------- */
 const canvas = document.getElementById('canvas');
 const gl = canvas.getContext('webgl');
-if(!gl) { console.error('WebGL not supported'); }
+if(!gl){ console.error('WebGL not supported'); }
 
+/* resize handling */
 function resize(){
   const dpr = window.devicePixelRatio || 1;
   const w = Math.floor(window.innerWidth * dpr);
   const h = Math.floor(window.innerHeight * dpr);
-  if(canvas.width !== w || canvas.height !== h){
+  if (canvas.width !== w || canvas.height !== h) {
     canvas.width = w;
     canvas.height = h;
     canvas.style.width = window.innerWidth + 'px';
@@ -328,13 +368,12 @@ function resize(){
 window.addEventListener('resize', resize);
 resize();
 
-/* vertex shader */
+/* shader sources */
 const vertSrc = `
 attribute vec2 position;
 void main(){ gl_Position = vec4(position, 0.0, 1.0); }
 `;
 
-/* fragment shader - the heart shader you provided originally */
 const fragSrc = `
 precision highp float;
 uniform float width;
@@ -354,26 +393,21 @@ float sdBezier(vec2 pos, vec2 A, vec2 B, vec2 C){
     vec2 b = A - 2.0*B + C;
     vec2 c = a * 2.0;
     vec2 d = A - pos;
-
     float kk = 1.0 / dot(b,b);
     float kx = kk * dot(a,b);
     float ky = kk * (2.0*dot(a,a)+dot(d,b)) / 3.0;
     float kz = kk * dot(d,a);
-
     float res = 0.0;
-
     float p = ky - kx*kx;
     float p3 = p*p*p;
     float q = kx*(2.0*kx*kx - 3.0*ky) + kz;
     float h = q*q + 4.0*p3;
-
     if(h >= 0.0){ 
         h = sqrt(h);
         vec2 x = (vec2(h, -h) - q) / 2.0;
         vec2 uv = sign(x)*pow(abs(x), vec2(1.0/3.0));
         float t = uv.x + uv.y - kx;
         t = clamp( t, 0.0, 1.0 );
-
         vec2 qos = d + (c + b*t)*t;
         res = length(qos);
     }else{
@@ -383,22 +417,17 @@ float sdBezier(vec2 pos, vec2 A, vec2 B, vec2 C){
         float n = sin(v)*1.732050808;
         vec3 t = vec3(m + m, -n - m, n - m) * z - kx;
         t = clamp( t, 0.0, 1.0 );
-
         vec2 qos = d + (c + b*t.x)*t.x;
         float dis = dot(qos,qos);
         res = dis;
-
         qos = d + (c + b*t.y)*t.y;
         dis = dot(qos,qos);
         res = min(res,dis);
-
         qos = d + (c + b*t.z)*t.z;
         dis = dot(qos,qos);
         res = min(res,dis);
-
         res = sqrt( res );
     }
-    
     return res;
 }
 
@@ -416,11 +445,9 @@ float getSegment(float t, vec2 pos, float offset, float scale){
     for(int i = 0; i < POINT_COUNT; i++){
         points[i] = getHeartPosition(offset + float(i)*len + fract(speed * t) * 6.28);
     }
-    
     vec2 c = (points[0] + points[1]) / 2.0;
     vec2 c_prev;
     float dist = 10000.0;
-    
     for(int i = 0; i < POINT_COUNT-1; i++){
         c_prev = c;
         c = (points[i] + points[i+1]) / 2.0;
@@ -438,29 +465,22 @@ void main(){
     pos.y += 0.02;
     float scale = 0.000015 * height;
     float t = time;
-    
     float dist = getSegment(t, pos, 0.0, scale);
     float glow = getGlow(dist, radius, intensity);
-    
     vec3 col = vec3(0.0);
-
     col += 10.0*vec3(smoothstep(0.003, 0.001, dist));
     col += glow * vec3(1.0,0.05,0.3);
-    
     dist = getSegment(t, pos, 3.4, scale);
     glow = getGlow(dist, radius, intensity);
-    
     col += 10.0*vec3(smoothstep(0.003, 0.001, dist));
     col += glow * vec3(0.1,0.4,1.0);
-          
     col = 1.0 - exp(-col);
     col = pow(col, vec3(0.4545));
-
     gl_FragColor = vec4(col,1.0);
 }
 `;
 
-/* compile helpers */
+/* compile and link */
 function compile(src,type){
   const s = gl.createShader(type);
   gl.shaderSource(s, src);
@@ -470,7 +490,6 @@ function compile(src,type){
   }
   return s;
 }
-
 const v = compile(vertSrc, gl.VERTEX_SHADER);
 const f = compile(fragSrc, gl.FRAGMENT_SHADER);
 const program = gl.createProgram();
