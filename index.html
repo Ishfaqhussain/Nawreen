@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galaxy Heart Animation</title>
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Galaxy Background */
+body {
+  background: url("https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&w=1400&q=80")
+    no-repeat center center fixed;
+  background-size: cover;
+  animation: galaxyMove 40s infinite linear;
+}
+
+@keyframes galaxyMove {
+  0% { background-position: center center; }
+  50% { background-position: center top; }
+  100% { background-position: center center; }
+}
+
+/* Handwritten font */
+@font-face {
+  font-family: "LoveHand";
+  src: url("https://fonts.gstatic.com/s/pacifico/v22/FwZY7-Qmy14u9lezJ96A4sijpFu_.ttf");
+}
+
+.container {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* SVG heart drawing */
+svg {
+  width: 300px;
+  height: 300px;
+  overflow: visible;
+}
+
+.path {
+  fill: none;
+  stroke: #ff1a6a;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+  animation: drawHeart 4s ease forwards;
+  filter: drop-shadow(0 0 20px #ff1a6a);
+}
+
+@keyframes drawHeart {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Name appears after animation */
+.name {
+  position: absolute;
+  color: #fff;
+  font-family: "LoveHand", cursive;
+  font-size: 38px;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+  text-shadow: 0 0 15px #ff1a6a;
+  top: 53%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Subtitle */
+.subtitle {
+  position: absolute;
+  top: 63%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ffd0e4;
+  font-size: 20px;
+  opacity: 0;
+  transition: opacity 2s ease;
+  text-shadow: 0 0 10px #ff4b88;
+  letter-spacing: 1px;
+}
+
+/* Click-to-reveal */
+.reveal {
+  position: absolute;
+  bottom: 14%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  padding: 12px 24px;
+  background: #ff1a6a;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+  box-shadow: 0 0 15px #ff1a6a;
+}
+
+.hidden-message {
+  position: absolute;
+  bottom: 7%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  color: #ffe6f2;
+  opacity: 0;
+  transition: opacity 2s ease;
+  text-shadow: 0 0 10px #ff4b88;
+}
+
+/* Floating particles */
+.particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #ff4b88;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: floatUp 4s infinite ease-in-out;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-150px) scale(0.5); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bgm" src="music.mp3"></audio>
+
+<div class="container">
+
+  <svg viewBox="0 0 200 200">
+    <path class="path"
+      d="M100 170
+       C20 110, 20 40, 100 60
+       C180 40, 180 110, 100 170 Z" />
+  </svg>
+
+  <div class="name" id="name">Nawreen</div>
+  <div class="subtitle" id="subtitle">You deserve love.</div>
+
+  <div class="reveal" id="revealBtn">Tap to reveal</div>
+  <div class="hidden-message" id="secret">I’m glad you exist.</div>
+
+</div>
+
+<script>
+
+/* timed reveals */
+setTimeout(() => {
+  document.getElementById("name").style.opacity = 1;
+}, 4000);
+
+setTimeout(() => {
+  document.getElementById("subtitle").style.opacity = 1;
+}, 5000);
+
+setTimeout(() => {
+  document.getElementById("revealBtn").style.opacity = 1;
+}, 6000);
+
+/* Reveal + music */
+document.getElementById("revealBtn").addEventListener("click", () => {
+  document.getElementById("secret").style.opacity = 1;
+  document.getElementById("bgm").play();
+});
+
+/* Galaxy particles */
+function createParticles() {
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement("div");
+    p.classList.add("particle");
+
+    p.style.left = Math.random() * window.innerWidth + "px";
+    p.style.bottom = Math.random() * 60 + "px";
+    p.style.animationDelay = Math.random() * 3 + "s";
+
+    document.body.appendChild(p);
+
+    setTimeout(() => p.remove(), 4000);
+  }
+}
+
+setInterval(createParticles, 1000);
+
+</script>
+
+</body>
+</html>
