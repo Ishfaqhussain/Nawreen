@@ -1,150 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nawreen</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Heart Animation - Nawreen</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-<style>
-/* Galaxy Background */
-body {
-  margin: 0;
-  overflow: hidden;
-  background: black;
-  font-family: "Pacifico", cursive;
-  color: white;
-  text-align: center;
-}
+    /* animated galaxy background */
+    body::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: url('https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;
+      animation: galaxy 60s linear infinite;
+      z-index: -2;
+    }
 
-/* Stars animation */
-@keyframes stars {
-  0% { transform: translateY(0px); }
-  100% { transform: translateY(-2000px); }
-}
+    @keyframes galaxy {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(25%, 25%) scale(1.1); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
 
-.stars, .stars2, .stars3 {
-  position: fixed; top: 0; left: 0;
-  width: 2000px; height: 2000px;
-  background: transparent url('https://i.imgur.com/aYp7QEe.png') repeat;
-  animation: stars 80s linear infinite;
-}
-.stars2 { animation-duration: 120s; opacity: 0.6; }
-.stars3 { animation-duration: 200s; opacity: 0.4; }
+    svg {
+      width: 200px;
+      height: 200px;
+    }
 
-/* Heart drawing */
-#heart {
-  position: absolute;
-  top: 35%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 280px; height: 250px;
-}
+    path {
+      fill: none;
+      stroke: #ff3366;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 600;
+      stroke-dashoffset: 600;
+      animation: draw 3s ease-in-out forwards, beat 1.5s 3s infinite ease-in-out;
+    }
 
-path {
-  stroke: #ff3366;
-  stroke-width: 4;
-  fill: none;
-  stroke-dasharray: 1600;
-  stroke-dashoffset: 1600;
-  animation: draw 4s ease forwards;
-}
+    @keyframes draw {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
 
-@keyframes draw {
-  to { stroke-dashoffset: 0; }
-}
+    @keyframes beat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
 
-/* Name inside heart */
-#name {
-  position: absolute;
-  top: 46%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 38px;
-  opacity: 0;
-  animation: fadeIn 2s ease forwards;
-  animation-delay: 3s;
-  font-family: "Pacifico", cursive;
-}
+    .name {
+      position: absolute;
+      color: white;
+      font-size: 32px;
+      opacity: 0;
+      animation: fadeName 1s forwards;
+      animation-delay: 3s;
+      font-family: 'Pacifico', cursive;
+    }
 
-/* Subtext */
-#sub {
-  position: absolute;
-  top: 63%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 20px;
-  opacity: 0;
-  animation: fadeIn 2s forwards;
-  animation-delay: 4s;
-}
-
-/* Tap to reveal */
-#tap {
-  position: absolute;
-  top: 75%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 18px;
-  opacity: 0;
-  animation: fadeIn 2s forwards;
-  animation-delay: 6s;
-  cursor: pointer;
-}
-
-/* Hidden message */
-#hidden {
-  position: absolute;
-  top: 88%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 22px;
-  opacity: 0;
-  transition: 1.5s ease;
-  font-family: "Pacifico", cursive;
-}
-
-/* Fade in animation */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* Handwritten font import */
-@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-</style>
+    @keyframes fadeName {
+      to { opacity: 1; }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
 </head>
-
 <body>
 
-<div class="stars"></div>
-<div class="stars2"></div>
-<div class="stars3"></div>
-
-<!-- Heart SVG Animation -->
-<svg id="heart" viewBox="0 0 100 90">
-  <path d="M50 80 L10 35 A20 20 0 0 1 50 20 A20 20 0 0 1 90 35 Z"/>
-</svg>
-
-<div id="name">Nawreen</div>
-<div id="sub">You deserve love.</div>
-<div id="tap">Tap to reveal</div>
-<div id="hidden">I’m glad you exist</div>
-
-<!-- Background Music -->
-<audio id="bgm" loop>
-  <source src="https://cdn.pixabay.com/audio/2022/10/31/audio_1dcd2dfb0c.mp3">
-</audio>
-
-<script>
-// Reveal message on tap
-document.getElementById("tap").addEventListener("click", () => {
-  document.getElementById("hidden").style.opacity = "1";
-
-  let music = document.getElementById("bgm");
-  music.play().catch(() => {
-    // Mobile browsers require user interaction
-  });
-});
-</script>
+  <div style="position: relative;">
+    <svg viewBox="0 0 100 90">
+      <path d="M50 80 L10 35 A20 20 0 0 1 50 20 A20 20 0 0 1 90 35 Z"/>
+    </svg>
+    <div class="name">Nawreen</div>
+  </div>
 
 </body>
 </html>
